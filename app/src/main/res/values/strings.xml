@@ -1,5 +1,8 @@
 <resources>
-    <string name="app_name">SpotifyStreamer</string>
+    <string name="app_name">Spotify Streamer</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+
+    // its user in result list item
+    <string name="artist_search_list_item_image_description">Artist image</string>
 </resources>
