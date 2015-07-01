@@ -12,11 +12,13 @@ import android.widget.ListView;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class MainActivityFragment extends Fragment {
+public class ArtistSearchFragment extends Fragment {
+
+
 
     ArrayAdapter<String> resultsAdapter;
 
-    public MainActivityFragment() {
+    public ArtistSearchFragment() {
 
         }
 
