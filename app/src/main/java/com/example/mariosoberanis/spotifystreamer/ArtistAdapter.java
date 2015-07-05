@@ -10,17 +10,20 @@ import android.widget.TextView;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 
-import java.util.ArrayList;
+import java.util.List;
+
+import kaaes.spotify.webapi.android.models.Artist;
+import kaaes.spotify.webapi.android.models.Image;
 
 /**
- * Created by mariosoberanis on 7/4/15.
+ * Created by mariosoberanis on 7/4/15. imporamos
  */
 public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder> {
 
-    private ArrayList<Artist> artists;
+    private List<Artist> artists;
     private ImageLoader imageLoader;
 
-    public ArtistAdapter(ArrayList<Artist> artists) {
+    public ArtistAdapter(List<Artist> artists) {
         this.artists = artists;
     }
 
@@ -37,10 +40,11 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
     public void onBindViewHolder(ViewHolder holder, int position) {
         Artist artist = artists.get(position);
 
-        holder.nameView.setText(artist.getName());
+        holder.nameView.setText(artist.name);
 
-        if (artist.getImageSrc() != null && imageLoader != null) {
-            holder.imageView.setImageUrl(artist.getImageSrc(), imageLoader);
+        if (!artist.images.isEmpty()) {
+            Image image = artist.images.get(1);
+            holder.imageView.setImageUrl(image.url, imageLoader);
         }
     }
 
@@ -55,7 +59,7 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
         this.imageLoader = imageLoader;
     }
 
-    public void setArtists(ArrayList<Artist> artists) {
+    public void setArtists(List<Artist> artists) {
         this.artists = artists;
         notifyDataSetChanged();
     }

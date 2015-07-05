@@ -14,21 +14,20 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
+
+import kaaes.spotify.webapi.android.SpotifyApi;
+import kaaes.spotify.webapi.android.SpotifyService;
+import kaaes.spotify.webapi.android.models.Artist;
+import kaaes.spotify.webapi.android.models.ArtistsPager;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+
 
 
 /**
@@ -43,6 +42,8 @@ public class ArtistSearchFragment extends Fragment {
     private ArtistAdapter resultsAdapter;
 
     private ImageLoader imageLoader;
+
+    private SpotifyService spotifyService;
 
 
         @Override
@@ -65,12 +66,16 @@ public class ArtistSearchFragment extends Fragment {
             });
 
             resultsAdapter = new ArtistAdapter(new ArrayList<Artist>());
+            resultsAdapter.setImageLoader(imageLoader);
+
+// aqui conectamos el resultado de la busqueda con la lista
 
             LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
             RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.artist_search_results_list);
 
             recyclerView.setLayoutManager(layoutManager);
             recyclerView.setAdapter(resultsAdapter);
+// Aqui conectamos el artista que queremos buscar
 
             EditText editText = (EditText) view.findViewById(R.id.search_edit_text);
             editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -79,6 +84,7 @@ public class ArtistSearchFragment extends Fragment {
                 public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                     searchArtists(v.getText());
                     return true;
+
                 }
 
             });
@@ -87,54 +93,36 @@ public class ArtistSearchFragment extends Fragment {
 
         }
 
-    public void searchArtists(CharSequence query) {
-        String BASE_URL = "https://api.spotify.com/v1/search";
 
-        String url = null;
-        try {
-            url = BASE_URL + "?type=artist&q=" + URLEncoder.encode(query.toString(), "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+    private void searchArtists(CharSequence query) {
+        getSpotifyService().searchArtists(query.toString(), new Callback<ArtistsPager>() {
 
-        JsonObjectRequest jsonRequest = new JsonObjectRequest(
-                Request.Method.GET, url, null,
-
-                new Response.Listener<JSONObject>() {
+            @Override
+            public void success(final ArtistsPager artistsPager, Response response) {
+                getActivity().runOnUiThread(new Runnable() {
 
                     @Override
-                    public void onResponse(JSONObject object) {
-                        ArrayList<Artist> artists = new ArrayList<>();
-
-                        try {
-                            JSONObject artistsWrapper = object.getJSONObject("artists");
-                            JSONArray artistsArray = artistsWrapper.getJSONArray("items");
-
-                            for (int i = 0; i < artistsArray.length(); i++) {
-                                JSONObject artistObject = artistsArray.getJSONObject(i);
-                                artists.add(Artist.fromJSONObject(artistObject));
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                        resultsAdapter.setImageLoader(imageLoader);
-                        resultsAdapter.setArtists(artists);
+                    public void run() {
+                        resultsAdapter.setArtists(artistsPager.artists.items);
                     }
 
-                },
+                });
+            }
 
-                new Response.ErrorListener() {
+            @Override
+            public void failure(RetrofitError error) {
+                Log.e(LOG_TAG, error.getLocalizedMessage());
+            }
 
-                    @Override
-                    public void onErrorResponse(VolleyError volleyError) {
-                        Log.e(LOG_TAG, volleyError.getLocalizedMessage());
-                    }
+        });
+    }
 
-                }
-        );
 
-        requestQueue.add(jsonRequest);
+    private SpotifyService getSpotifyService() {
+        if (spotifyService != null) return spotifyService;
+
+        SpotifyApi api = new SpotifyApi();
+        return api.getService();
     }
 }
 
