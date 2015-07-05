@@ -7,7 +7,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".SearchActivityFragment">
+    tools:context=".ArtistSearchFragment">
 
     <EditText android:id="@+id/search_edit_text"
         android:layout_width="match_parent"
@@ -17,12 +17,9 @@
         android:singleLine="true" />
 
     <android.support.v7.widget.RecyclerView android:id="@+id/artist_search_results_list"
-        scrollbars="vertical"
+        android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:divider="@drawable/abc_list_divider_mtrl_alpha"
-        tools:listitem="@layout/search_result_list_item" />
+        android:scrollbars="vertical" />
 
 
 </LinearLayout>
