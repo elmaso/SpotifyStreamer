@@ -122,7 +122,8 @@ public class ArtistSearchFragment extends Fragment {
         if (spotifyService != null) return spotifyService;
 
         SpotifyApi api = new SpotifyApi();
-        return api.getService();
+        spotifyService = api.getService();
+        return spotifyService;
     }
 }
 
