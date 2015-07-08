@@ -23,6 +23,8 @@ public class ArtistsAdapter extends RecyclerView.Adapter<ArtistsAdapter.ViewHold
     private List<Artist> artists;
     private ImageLoader imageLoader;
 
+    private ClickListener clickListener;
+
     public ArtistsAdapter(List<Artist> artists) {
         this.artists = artists;
     }
@@ -40,12 +42,7 @@ public class ArtistsAdapter extends RecyclerView.Adapter<ArtistsAdapter.ViewHold
     public void onBindViewHolder(ViewHolder holder, int position) {
         Artist artist = artists.get(position);
 
-        holder.nameView.setText(artist.name);
-
-        if (!artist.images.isEmpty()) {
-            Image image = artist.images.get(1);
-            holder.imageView.setImageUrl(image.url, imageLoader);
-        }
+        holder.setArtist(artist);
     }
 
     @Override
@@ -53,6 +50,9 @@ public class ArtistsAdapter extends RecyclerView.Adapter<ArtistsAdapter.ViewHold
         if (artists == null) return 0;
 
         return artists.size();
+    }
+    public void setClickListener(ClickListener clickListener) {
+        this.clickListener = clickListener;
     }
 
     public void setImageLoader(ImageLoader imageLoader) {
@@ -63,17 +63,44 @@ public class ArtistsAdapter extends RecyclerView.Adapter<ArtistsAdapter.ViewHold
         this.artists = artists;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public interface ClickListener {
 
-        public TextView nameView;
-        public NetworkImageView imageView;
+        void onArtistItemClicked(View view, Artist artist);
+
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        private TextView nameView;
+        private NetworkImageView imageView;
+
+        private Artist artist;
 
         public ViewHolder(View view) {
             super(view);
+            view.setOnClickListener(this);
 
             nameView = (TextView) view.findViewById(R.id.artist_search_list_item_name);
             imageView = (NetworkImageView) view.findViewById(R.id.artist_search_list_item_image);
         }
+        @Override
+        public void onClick(View view) {
+            if (clickListener == null) return;
+
+            clickListener.onArtistItemClicked(view, artist);
+        }
+
+        public void setArtist(Artist artist) {
+            this.artist = artist;
+
+            nameView.setText(artist.name);
+
+            if (!artist.images.isEmpty() && imageLoader != null) {
+                Image image = artist.images.get(1);
+                imageView.setImageUrl(image.url, imageLoader);
+            }
+        }
+
     }
 
 
