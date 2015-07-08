@@ -29,67 +29,66 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 
-
 /**
  * A placeholder fragment containing a simple view.
  */
-public class ArtistSearchFragment extends Fragment {
+public class SearchActivityFragment extends Fragment {
 
-    private final String LOG_TAG = ArtistSearchFragment.class.getSimpleName();
+    private final String LOG_TAG = SearchActivityFragment.class.getSimpleName();
 
     private RequestQueue requestQueue;
 
-    private ArtistAdapter resultsAdapter;
+    private ArtistsAdapter resultsAdapter;
 
     private ImageLoader imageLoader;
 
     private SpotifyService spotifyService;
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.artistfragment_search, container, false);
 
-        @Override
-        public View onCreateView (LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState){
+        requestQueue = Volley.newRequestQueue(getActivity());
+        imageLoader = new ImageLoader(requestQueue, new ImageLoader.ImageCache() {
+            private final LruCache<String, Bitmap> cache = new LruCache<>(10);
 
-            View view = inflater.inflate(R.layout.artistfragment_main, container, false);
+            public void putBitmap(String url, Bitmap bitmap) {
+                cache.put(url, bitmap);
+            }
 
-            requestQueue = Volley.newRequestQueue(getActivity());
-            imageLoader = new ImageLoader(requestQueue, new ImageLoader.ImageCache() {
-                private final LruCache<String, Bitmap> cache = new LruCache<>(10);
+            public Bitmap getBitmap(String url) {
+                return cache.get(url);
+            }
+        });
 
-                public void putBitmap(String url, Bitmap bitmap) {
-                    cache.put(url, bitmap);
-                }
+        resultsAdapter = new ArtistsAdapter(new ArrayList<Artist>());
+        resultsAdapter.setImageLoader(imageLoader);
 
-                public Bitmap getBitmap(String url) {
-                    return cache.get(url);
-                }
-            });
-
-            resultsAdapter = new ArtistAdapter(new ArrayList<Artist>());
+            resultsAdapter = new ArtistsAdapter(new ArrayList<Artist>());
             resultsAdapter.setImageLoader(imageLoader);
 
-// aqui conectamos el resultado de la busqueda con la lista
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.artist_search_results_list);
 
-            LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-            RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.artist_search_results_list);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(resultsAdapter);
 
-            recyclerView.setLayoutManager(layoutManager);
-            recyclerView.setAdapter(resultsAdapter);
-// Aqui conectamos el artista que queremos buscar
+        EditText editText = (EditText) view.findViewById(R.id.search_edit_text);
+        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 
-            EditText editText = (EditText) view.findViewById(R.id.search_edit_text);
-            editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                // Guard against sending multiple requests when triggered by a down key action
+                if (event.getAction() == KeyEvent.ACTION_DOWN) return false;
 
-                @Override
-                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                    searchArtists(v.getText());
-                    return true;
+                searchArtists(v.getText());
+                return true;
+            }
 
-                }
+        });
 
-            });
-
-            return view;
+        return view;
 
         }
 

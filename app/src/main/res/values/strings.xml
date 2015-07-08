@@ -1,8 +1,19 @@
 <resources>
     <string name="app_name">Spotify Streamer</string>
-    <string name="hello_world">Hello world!</string>
+
+    <!-- Activity titles -->
+    <string name="title_activity_top_tracks">
+        Top 10 tracks
+    </string>
+
+    <!-- Menu items -->
     <string name="action_settings">Settings</string>
 
-    // its user in result list item
+    <!-- Image descriptions -->
     <string name="artist_search_list_item_image_description">Artist image</string>
+    <string name="track_list_item_image_description">Album art</string>
+
+    <!-- Toasts -->
+    <string name="toast_no_artist_match">Sorry we don\'t know any artist like that, try something else</string>
+    <string name="toast_no_top_tracks">Sorry we don\'t have any top tracks</string>
 </resources>

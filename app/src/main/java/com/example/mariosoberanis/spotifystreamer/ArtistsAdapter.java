@@ -18,12 +18,12 @@ import kaaes.spotify.webapi.android.models.Image;
 /**
  * Created by mariosoberanis on 7/4/15. imporamos
  */
-public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder> {
+public class ArtistsAdapter extends RecyclerView.Adapter<ArtistsAdapter.ViewHolder> {
 
     private List<Artist> artists;
     private ImageLoader imageLoader;
 
-    public ArtistAdapter(List<Artist> artists) {
+    public ArtistsAdapter(List<Artist> artists) {
         this.artists = artists;
     }
 
@@ -61,7 +61,6 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ViewHolder
 
     public void setArtists(List<Artist> artists) {
         this.artists = artists;
-        notifyDataSetChanged();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
