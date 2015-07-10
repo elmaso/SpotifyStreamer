@@ -3,6 +3,7 @@
     <string name="hello_world">Hi Maso</string>
     <!-- Activity titles -->
     <string name="title_activity_top_tracks">Top 10 tracks</string>
+    <string name="example_search_for_testing">Muse</string>
 
     <!-- Menu items -->
     <string name="action_settings">Settings</string>

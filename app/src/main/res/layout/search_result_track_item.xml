@@ -3,13 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:paddingBottom="15dp"
+    android:paddingLeft="15dp"
+    android:paddingTop="5dp">
 
     <ImageView
         android:id="@+id/imageViewAlbum"
         android:layout_width="100dp"
-        android:layout_height="100dp"/>
+        android:layout_height="100dp" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -21,18 +23,18 @@
             android:id="@+id/textViewTrackTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:layout_marginStart="20dp"
             android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
+            android:gravity="center_vertical"
             tools:text="tu y las nuves" />
 
         <TextView
             android:id="@+id/textViewTrackAlbum"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:layout_marginStart="20dp"
             android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
+            android:gravity="center_vertical"
             tools:text="Muse is in the house" />
 
     </LinearLayout>

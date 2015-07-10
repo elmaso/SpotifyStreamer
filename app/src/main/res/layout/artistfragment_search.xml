@@ -13,9 +13,10 @@
         android:id="@+id/search_edit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/abc_search_hint"
-        android:inputType="textCapSentences"
-        android:singleLine="true" />
+        android:imeOptions="actionSearch"
+        android:inputType="text"
+        android:maxLines="1"
+        android:text="@string/example_search_for_testing" />
 
     <ListView
         android:id="@+id/artist_search_results_list"

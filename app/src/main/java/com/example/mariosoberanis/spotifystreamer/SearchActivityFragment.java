@@ -37,7 +37,7 @@ import retrofit.client.Response;
 public class SearchActivityFragment extends Fragment {
 
     private IconicAdapter artistResultListViewAdapter = null;
-    private final String fallbackArtistImageUrl= "http://i.imgur.com/Qdchdfs.png";
+    private final String fallbackArtistImageUrl= "http://i.imgur.com/UinRWDbb.png";
 
     private final String LOG_TAG = SearchActivityFragment.class.getSimpleName();
 
@@ -113,10 +113,6 @@ public class SearchActivityFragment extends Fragment {
 
                 List<Artist> artists = artistsPager.artists.items;
 
-//                for (Artist artist : artistsPager.artists.items) {
-//                    searchResultParcelables.add(new TrackParcelable(artist.name,artist.,
-//                            track.album.images.get(0).url,track.preview_url));
-//                }
 
                 final int artistsReturned = artists.size();
 
@@ -194,7 +190,7 @@ public class SearchActivityFragment extends Fragment {
             Picasso.with(getActivity()).load(result
                     .artistImageUrl).into(artistImage);
 
-            TextView artistName = (TextView) convertView.findViewById(R.id.search_edit_text);
+            TextView artistName = (TextView) convertView.findViewById(R.id.textViewArtistName);
             artistName.setText(result.artistName);
 
             return convertView;
