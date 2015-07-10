@@ -64,7 +64,7 @@ public class TopTracksActivityFragment extends Fragment {
         resultsAdapter.setImageLoader(imageLoader);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.top_tracks_list);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.listViewOfTopTracks);
 
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(resultsAdapter);

@@ -66,7 +66,7 @@ public class TracksAdapter extends RecyclerView.Adapter<TracksAdapter.ViewHolder
 
             nameView = (TextView) view.findViewById(R.id.track_list_item_song_title);
             albumNameView = (TextView) view.findViewById(R.id.track_list_item_album_name);
-            imageView = (NetworkImageView) view.findViewById(R.id.track_list_item_image);
+            imageView = (NetworkImageView) view.findViewById(R.id.imageViewAlbum);
         }
 
         public void setTrack(Track track) {

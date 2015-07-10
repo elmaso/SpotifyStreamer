@@ -1,34 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="?android:listPreferredItemHeight"
+    android:layout_height="wrap_content"
     android:gravity="center"
-    tools:ignore="UseCompoundDrawables">
+    android:orientation="horizontal">
 
-    <com.android.volley.toolbox.NetworkImageView android:id="@+id/track_list_item_image"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:contentDescription="@string/track_list_item_image_description" />
+    <ImageView
+        android:id="@+id/imageViewAlbum"
+        android:layout_width="100dp"
+        android:layout_height="100dp"/>
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:orientation="vertical">
 
-        <TextView android:id="@+id/track_list_item_song_title"
+        <TextView
+            android:id="@+id/textViewTrackTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_marginStart="20dp"
+            android:layout_marginLeft="20dp"
+            tools:text="tu y las nuves" />
+
+        <TextView
+            android:id="@+id/textViewTrackAlbum"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            tools:text="A Sky Full of Stars" />
-
-        <TextView android:id="@+id/track_list_item_album_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            tools:text="Ghost Stories" />
+            android:layout_marginStart="20dp"
+            android:layout_marginLeft="20dp"
+            tools:text="Muse is in the house" />
 
     </LinearLayout>
 

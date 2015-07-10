@@ -1,22 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="?android:listPreferredItemHeight"
-    android:gravity="center"
-    tools:ignore="UseCompoundDrawables">
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="20dp">
 
-    <com.android.volley.toolbox.NetworkImageView android:id="@+id/artist_search_list_item_image"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+    <ImageView
+        android:id="@+id/imageViewArtist"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:contentDescription="@string/artist_search_list_item_image_description" />
 
-    <TextView android:id="@+id/artist_search_list_item_name"
+    <TextView
+        android:id="@+id/textViewArtistName"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center_vertical"
-        tools:text="Music test Artists" />
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp"
+        tools:text="Muse" />
 </LinearLayout>
 
 

@@ -1,29 +1,27 @@
 package com.example.mariosoberanis.spotifystreamer;
 
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.util.LruCache;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.Volley;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import kaaes.spotify.webapi.android.SpotifyApi;
+import kaaes.spotify.webapi.android.SpotifyService;
 import kaaes.spotify.webapi.android.models.Artist;
 import kaaes.spotify.webapi.android.models.ArtistsPager;
 import retrofit.Callback;
@@ -34,108 +32,176 @@ import retrofit.client.Response;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class SearchActivityFragment extends Fragment
-        implements ArtistsAdapter.ClickListener{
+public class SearchActivityFragment extends Fragment {
 
-    public static final String EXTRA_ARTIST_ID = "no.sindrenm.spotifystreamer.ARTIST_ID";
-    public static final String EXTRA_ARTIST_NAME = "no.sindrenm.spotifystreamer.ARTIST_NAME";
+    private IconicAdapter artistResultListViewAdapter = null;
+    private final String fallbackArtistImageUrl= "http://i.imgur.com/Qdchdfs.png";
 
     private final String LOG_TAG = SearchActivityFragment.class.getSimpleName();
 
-    private ArtistsAdapter resultsAdapter;
+    public SearchActivityFragment() {
+
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.artistfragment_search, container, false);
 
-        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        ImageLoader imageLoader = new ImageLoader(requestQueue, new ImageLoader.ImageCache()  {
-            private final LruCache<String, Bitmap> cache = new LruCache<>(10);
+        ArrayList<SearchResultParcelable> searchResultParcelables = null;
 
-            public void putBitmap(String url, Bitmap bitmap) {
-                cache.put(url, bitmap);
-            }
-
-            public Bitmap getBitmap(String url) {
-                return cache.get(url);
-            }
-        });
-
-        resultsAdapter = new ArtistsAdapter(new ArrayList<Artist>());
-        resultsAdapter.setImageLoader(imageLoader);
-        resultsAdapter.setClickListener(this);
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.artist_search_results_list);
-
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(resultsAdapter);
 
         EditText editText = (EditText) view.findViewById(R.id.search_edit_text);
         editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                // Guard against sending multiple requests when triggered by a down key action
-                if (event.getAction() == KeyEvent.ACTION_DOWN) return false;
-
-                searchArtists(v.getText());
-                return true;
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    performSearch(v.getText().toString());
+                    return true;
+                }
+                return false;
             }
-
         });
-
-        return view;
-
+        if(savedInstanceState == null || !savedInstanceState.containsKey("search_key")) {
+            searchResultParcelables = new ArrayList<SearchResultParcelable>();
+        }
+        else {
+            searchResultParcelables = savedInstanceState.getParcelableArrayList("search_key");
         }
 
+        ListView listView = (ListView) rootView.findViewById(R.id.artist_search_results_list);
+        artistResultListViewAdapter = new IconicAdapter(searchResultParcelables);
+        listView.setAdapter(artistResultListViewAdapter);
 
-    private void searchArtists(CharSequence query) {
-        Spotify.getService().searchArtists(query.toString(), new Callback<ArtistsPager>() {
-
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void success(final ArtistsPager artistsPager, Response response) {
-                getActivity().runOnUiThread(new Runnable() {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent trackIntent = new Intent(getActivity(), TrackActivity.class);
+                trackIntent.putExtra(Intent.EXTRA_TEXT,
+                        artistResultListViewAdapter.getSearchResultParcelables()
+                                .get(position).artistName); //extra text = artist name
+                trackIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, //shortcut name = artist id
+                        artistResultListViewAdapter.getSearchResultParcelables()
+                                .get(position).artistId);
+                startActivity(trackIntent);
+            }
+        });
 
-                    @Override
-                    public void run() {
-                        List<Artist> artists = artistsPager.artists.items;
+        return rootView;
 
-                        if (artists.isEmpty()) {
-                            Toast.makeText(
-                                    getActivity(),
-                                    R.string.toast_no_artist_match,
-                                    Toast.LENGTH_SHORT
-                            ).show();
-                        } else {
-                            resultsAdapter.setArtists(artists);
-                            resultsAdapter.notifyDataSetChanged();
-                        }
+    }
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList("search_key",
+                artistResultListViewAdapter.getSearchResultParcelables());
+        super.onSaveInstanceState(outState);
+    }
+
+    private void performSearch(String query) {
+
+        SpotifyApi api = new SpotifyApi();
+        SpotifyService spotify = api.getService();
+
+        spotify.searchArtists(query, new Callback<ArtistsPager>() {
+            @Override
+            public void success(ArtistsPager artistsPager, Response response) {
+                //List<Artist> searchResultParcelables = artistsPager.artists.items;
+                final ArrayList<SearchResultParcelable> searchResultParcelables =
+                        new ArrayList<SearchResultParcelable>();
+
+                List<Artist> artists = artistsPager.artists.items;
+
+//                for (Artist artist : artistsPager.artists.items) {
+//                    searchResultParcelables.add(new TrackParcelable(artist.name,artist.,
+//                            track.album.images.get(0).url,track.preview_url));
+//                }
+
+                final int artistsReturned = artists.size();
+
+                for (int i = 0; i < artistsReturned; i++) {
+                    Artist artist = artists.get(i);
+
+                    String artistImageUrl = "";
+                    if (!artist.images.isEmpty()) {
+                        artistImageUrl = artist.images.get(0).url;
+                    } else {
+                        artistImageUrl = fallbackArtistImageUrl;
                     }
 
+                    searchResultParcelables.add(new SearchResultParcelable(artist.name,
+                            artistImageUrl, artist.id));
+                }
+
+                artistResultListViewAdapter.swapItems(searchResultParcelables);
+
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (artistsReturned == 0) {
+
+                            Toast.makeText(getActivity(),
+                                    getString(R.string.toast_no_artist_match),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                        artistResultListViewAdapter.notifyDataSetChanged();
+                    }
                 });
             }
 
             @Override
             public void failure(RetrofitError error) {
-                Log.e(LOG_TAG, error.getLocalizedMessage());
+                Log.d("Artist failure", error.toString());
             }
-
         });
     }
 
 
-    @Override
-    public void onArtistItemClicked(View view, Artist artist) {
-        Context context = view.getContext();
-        Intent intent = new Intent(context, TopTracksActivity.class);
+    //This IconicAdapter Pattern is from Busy Android Coder's Guide page 272 of book version 6.7
+    class IconicAdapter extends ArrayAdapter<SearchResultParcelable> {
 
-        intent.putExtra(EXTRA_ARTIST_NAME, artist.name);
-        intent.putExtra(EXTRA_ARTIST_ID, artist.id);
+        private ArrayList<SearchResultParcelable> searchResultParcelables;
 
-        context.startActivity(intent);
+        public IconicAdapter(ArrayList<SearchResultParcelable> searchResultParcelables) {
+            /*
+            Normally this 0 in the super constructor would be the id of the textView we are updating,
+            but since we are using a custom Adapter, this is no longer appropriate. So we can just
+            put an arbitrary value here.
+             */
+            super(getActivity(),0, searchResultParcelables);
+            this.searchResultParcelables = searchResultParcelables;
+        }
+
+        public void swapItems(ArrayList<SearchResultParcelable> searchResultParcelables) {
+            this.searchResultParcelables.clear();
+            this.searchResultParcelables.addAll(searchResultParcelables);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            SearchResultParcelable result = getItem(position);
+
+
+            if (convertView == null) {
+                Log.d("convertView", "null");
+                convertView = LayoutInflater.from(getContext()).inflate(
+                        R.layout.search_result_list_item,
+                        parent, false);
+            }
+
+            ImageView artistImage = (ImageView) convertView.findViewById(R.id.imageViewAlbum);
+            Picasso.with(getActivity()).load(result
+                    .artistImageUrl).into(artistImage);
+
+            TextView artistName = (TextView) convertView.findViewById(R.id.textViewArtistName);
+            artistName.setText(result.artistName);
+
+            return convertView;
+
+        }
+
+        public ArrayList<SearchResultParcelable> getSearchResultParcelables(){
+            return searchResultParcelables;
+        }
     }
 }
-
 

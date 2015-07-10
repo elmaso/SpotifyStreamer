@@ -80,8 +80,8 @@ public class ArtistsAdapter extends RecyclerView.Adapter<ArtistsAdapter.ViewHold
             super(view);
             view.setOnClickListener(this);
 
-            nameView = (TextView) view.findViewById(R.id.artist_search_list_item_name);
-            imageView = (NetworkImageView) view.findViewById(R.id.artist_search_list_item_image);
+            nameView = (TextView) view.findViewById(R.id.textViewArtistName);
+            imageView = (NetworkImageView) view.findViewById(R.id.imageViewArtist);
         }
         @Override
         public void onClick(View view) {
