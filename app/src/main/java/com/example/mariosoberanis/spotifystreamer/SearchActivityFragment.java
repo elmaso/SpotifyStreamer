@@ -17,6 +17,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,12 +48,12 @@ public class SearchActivityFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.artistfragment_search, container, false);
+        View rootView = inflater.inflate(R.layout.artistfragment_search, container, false);
 
         ArrayList<SearchResultParcelable> searchResultParcelables = null;
 
 
-        EditText editText = (EditText) view.findViewById(R.id.search_edit_text);
+        EditText editText = (EditText) rootView.findViewById(R.id.search_edit_text);
         editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -76,7 +78,7 @@ public class SearchActivityFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent trackIntent = new Intent(getActivity(), TrackActivity.class);
+                Intent trackIntent = new Intent(getActivity(), TopTracksActivity.class);
                 trackIntent.putExtra(Intent.EXTRA_TEXT,
                         artistResultListViewAdapter.getSearchResultParcelables()
                                 .get(position).artistName); //extra text = artist name
@@ -188,11 +190,11 @@ public class SearchActivityFragment extends Fragment {
                         parent, false);
             }
 
-            ImageView artistImage = (ImageView) convertView.findViewById(R.id.imageViewAlbum);
+            ImageView artistImage = (ImageView) convertView.findViewById(R.id.imageViewArtist);
             Picasso.with(getActivity()).load(result
                     .artistImageUrl).into(artistImage);
 
-            TextView artistName = (TextView) convertView.findViewById(R.id.textViewArtistName);
+            TextView artistName = (TextView) convertView.findViewById(R.id.search_edit_text);
             artistName.setText(result.artistName);
 
             return convertView;

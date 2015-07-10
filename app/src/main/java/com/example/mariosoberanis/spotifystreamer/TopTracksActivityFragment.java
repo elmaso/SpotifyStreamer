@@ -1,27 +1,26 @@
 package com.example.mariosoberanis.spotifystreamer;
 
 import android.app.Fragment;
-import android.graphics.Bitmap;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.util.LruCache;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.Volley;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import kaaes.spotify.webapi.android.models.Artist;
+import kaaes.spotify.webapi.android.SpotifyApi;
+import kaaes.spotify.webapi.android.SpotifyService;
 import kaaes.spotify.webapi.android.models.Track;
 import kaaes.spotify.webapi.android.models.Tracks;
 import retrofit.Callback;
@@ -32,85 +31,147 @@ import retrofit.client.Response;
  * Created by mariosoberanis on 7/7/15.
  */
 public class TopTracksActivityFragment extends Fragment {
-    private final String LOG_TAG = TopTracksActivityFragment.class.getSimpleName();
+    private IconicAdapter trackResultListViewAdapter = null;
+    private String artistId = null;
 
-    private TracksAdapter resultsAdapter;
+    private final String LOG_TAG = TopTracksActivityFragment.class.getSimpleName();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_top_tracks, container, false);
-        Artist artist = new Artist();
-        artist.id = getActivity().getIntent()
-                .getStringExtra(SearchActivityFragment.EXTRA_ARTIST_ID);
-        artist.name = getActivity().getIntent()
-                .getStringExtra(SearchActivityFragment.EXTRA_ARTIST_NAME);
+        ArrayList<TrackParcelable> trackParcelables = null;
 
-        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        ImageLoader imageLoader = new ImageLoader(requestQueue, new ImageLoader.ImageCache() {
-            private final LruCache<String, Bitmap> cache = new LruCache<>(10);
+        View rootView = inflater.inflate(R.layout.fragment_top_tracks, container, false);
 
-            public void putBitmap(String url, Bitmap bitmap) {
-                cache.put(url, bitmap);
-            }
-
-            public Bitmap getBitmap(String url) {
-                return cache.get(url);
-            }
-        });
-
-        resultsAdapter = new TracksAdapter(new ArrayList<Track>());
-        resultsAdapter.setImageLoader(imageLoader);
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.listViewOfTopTracks);
-
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(resultsAdapter);
-
-        getTopTracks(artist);
-
-        return view;
-
+        Intent intent = getActivity().getIntent();
+        if(intent != null && intent.hasExtra(Intent.EXTRA_SHORTCUT_NAME)) {
+            artistId = intent.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
         }
 
-    private void getTopTracks(Artist artist) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("country", "NO"); // TODO: Allow user to configure country
+        if(savedInstanceState == null || !savedInstanceState.containsKey("tracks_key")) {
+            trackParcelables = new ArrayList<TrackParcelable>();
+            performSearch(artistId);
+        }
+        else {
+            trackParcelables = savedInstanceState.getParcelableArrayList("tracks_key");
+        }
 
-        Spotify.getService().getArtistTopTrack(artist.id, params, new Callback<Tracks>() {
+        ListView listView = (ListView) rootView.findViewById(R.id.listViewOfTopTracks);
+        trackResultListViewAdapter = new IconicAdapter(trackParcelables);
+        listView.setAdapter(trackResultListViewAdapter);
 
+        return rootView;
+    }
+
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList("tracks_key",
+                trackResultListViewAdapter.getTrackParcelables());
+        super.onSaveInstanceState(outState);
+    }
+
+    private ArrayList<String> getTrackNamesFromParcelables(ArrayList<TrackParcelable>
+                                                                   trackParcelables){
+
+        ArrayList<String> trackNames = new ArrayList<>();
+        for(TrackParcelable element : trackParcelables){
+            trackNames.add(element.name);
+        }
+        return trackNames;
+    }
+
+    private void performSearch(String artistId) {
+        SpotifyApi api = new SpotifyApi();
+        SpotifyService spotify = api.getService();
+
+        Map<String, Object> options = new HashMap<>();
+        options.put("country", "US");
+        spotify.getArtistTopTrack(artistId, options, new Callback<Tracks>() {
             @Override
-            public void success(final Tracks tracks, Response response) {
-                getActivity().runOnUiThread(new Runnable() {
+            public void success(Tracks tracks, Response response) {
+                final ArrayList<TrackParcelable> trackParcelables =
+                        new ArrayList<TrackParcelable>();
+                for (Track track : tracks.tracks) {
+                    trackParcelables.add(new TrackParcelable(track.name,track.album.name,
+                            track.album.images.get(0).url,track.preview_url));
+                }
+                trackResultListViewAdapter.swapItems(trackParcelables);
+                Log.d(LOG_TAG,trackParcelables.toString());
 
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        List<Track> tracksList = tracks.tracks;
-
-                        if (tracksList.isEmpty()) {
-                            Toast.makeText(
-                                    getActivity(),
-                                    R.string.toast_no_top_tracks,
-                                    Toast.LENGTH_SHORT
-                            ).show();
-                        } else {
-                            resultsAdapter.setTracks(tracksList);
-                            resultsAdapter.notifyDataSetChanged();
+                        if(trackParcelables.size()==0){
+                            Toast.makeText(getActivity(),
+                                    getString(R.string.toast_no_artist_match),
+                                    Toast.LENGTH_SHORT).show();
                         }
+                        trackResultListViewAdapter.notifyDataSetChanged();
                     }
-
                 });
             }
 
             @Override
             public void failure(RetrofitError error) {
-                Log.e(LOG_TAG, error.getLocalizedMessage());
 
             }
-
         });
+
+    }
+    //This IconicAdapter Pattern is from Busy Android Coder's Guide page 272 of book version 6.7
+    class IconicAdapter extends ArrayAdapter<TrackParcelable> {
+
+        private ArrayList<TrackParcelable> trackParcelables;
+
+        public IconicAdapter(ArrayList<TrackParcelable> trackParcelables) {
+            /*
+            Normally this 0 in the super constructor would be the id of the textView we are updating,
+            but since we are using a custom Adapter, this is no longer appropriate. So we can just
+            put an arbitrary value here.
+             */
+            super(getActivity(), 0, trackParcelables);
+            this.trackParcelables = trackParcelables;
+        }
+
+        public void swapItems(ArrayList<TrackParcelable> trackParcelables) {
+            this.trackParcelables.clear();
+            this.trackParcelables.addAll(trackParcelables);
+
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+
+            TrackParcelable track = getItem(position);
+
+            //View Holder Pattern
+            if (convertView == null) {
+                Log.d("convertView", "null");
+                convertView = LayoutInflater.from(getContext()).inflate(
+                        R.layout.search_result_track_item,
+                        parent, false);
+            }
+
+            ImageView albumImage = (ImageView) convertView.findViewById(R.id.imageViewAlbum);
+            Picasso.with(getActivity()).load(track.albumImageUrl).into(albumImage);
+
+            TextView trackName = (TextView) convertView.findViewById(R.id.textViewTrackTitle);
+            trackName.setText(track.name);
+
+            TextView trackAlbum = (TextView) convertView.findViewById(R.id.textViewTrackAlbum);
+            trackName.setText(track.albumName);
+
+            return convertView;
+
+        }
+
+        public ArrayList<TrackParcelable> getTrackParcelables(){
+            return trackParcelables;
+        }
+
     }
 
 }
