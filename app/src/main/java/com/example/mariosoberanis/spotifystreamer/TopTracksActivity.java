@@ -2,6 +2,7 @@ package com.example.mariosoberanis.spotifystreamer;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -15,7 +16,7 @@ public class TopTracksActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search_track);
+        setContentView(R.layout.activity_track);
 
         Intent intent = getIntent();
 
@@ -44,9 +45,15 @@ public class TopTracksActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
+            case R.id.action_settings:
+                return true;
         }
+
 
         return super.onOptionsItemSelected(item);
     }
