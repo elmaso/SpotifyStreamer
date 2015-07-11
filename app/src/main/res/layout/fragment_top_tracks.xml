@@ -11,7 +11,7 @@
     tools:context=".TopTracksActivityFragment">
 
     <ListView
-        android:id="@+id/listViewOfTopTracks"
+        android:id="@+id/listViewTopTracks"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

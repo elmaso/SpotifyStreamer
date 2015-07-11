@@ -9,20 +9,20 @@ import android.os.Parcelable;
 
 //Parcel pattern taken from here:
 // http://stackoverflow.com/questions/12503836/how-to-save-custom-arraylist-on-android-screen-rotate
-public class TrackParcelable implements Parcelable {
+public class TopTrackParcelable implements Parcelable {
     public String name;
     public String albumName;
     public String albumImageUrl;
     public String trackPreviewUrl;
 
-    public TrackParcelable(String name, String albumName, String albumImageUrl, String trackPreviewUrl) {
+    public TopTrackParcelable(String name, String albumName, String albumImageUrl, String trackPreviewUrl) {
         this.name = name;
         this.albumName = albumName;
         this.albumImageUrl = albumImageUrl;
         this.trackPreviewUrl = trackPreviewUrl;
     }
 
-    private TrackParcelable(Parcel in) {
+    private TopTrackParcelable(Parcel in) {
         name = in.readString();
         albumName = in.readString();
         albumImageUrl = in.readString();
@@ -47,13 +47,13 @@ public class TrackParcelable implements Parcelable {
         dest.writeString(trackPreviewUrl);
 
     }
-    public static final Parcelable.Creator<TrackParcelable> CREATOR = new Parcelable.Creator<TrackParcelable>() {
-        public TrackParcelable createFromParcel(Parcel in) {
-            return new TrackParcelable(in);
+    public static final Parcelable.Creator<TopTrackParcelable> CREATOR = new Parcelable.Creator<TopTrackParcelable>() {
+        public TopTrackParcelable createFromParcel(Parcel in) {
+            return new TopTrackParcelable(in);
         }
 
-        public TrackParcelable[] newArray(int size) {
-            return new TrackParcelable[size];
+        public TopTrackParcelable[] newArray(int size) {
+            return new TopTrackParcelable[size];
         }
     };
 

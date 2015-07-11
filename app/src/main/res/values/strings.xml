@@ -1,9 +1,9 @@
 <resources>
-    <string name="app_name">Spotify Streamer</string>
+    <string name="app_name">Spotify Streamer Baby!!</string>
     <string name="hello_world">Hi Maso</string>
     <!-- Activity titles -->
-    <string name="title_activity_top_tracks">Top 10 tracks</string>
-    <string name="example_search_for_testing">Muse</string>
+    <string name="title_activity_top_tracks">Here comes the music</string>
+    <string name="example_search_for_artist">Muse</string>
 
     <!-- Menu items -->
     <string name="action_settings">Settings</string>
@@ -13,6 +13,6 @@
     <string name="track_list_item_image_description">Album art</string>
 
     <!-- Toasts -->
-    <string name="toast_no_artist_match">Sorry we don\'t know any artist like that, try something else</string>
+    <string name="toast_no_artist_match">Sorry mate, we don\'t know any artist like that, try something else</string>
     <string name="toast_no_top_tracks">Sorry we don\'t have any top tracks</string>
 </resources>

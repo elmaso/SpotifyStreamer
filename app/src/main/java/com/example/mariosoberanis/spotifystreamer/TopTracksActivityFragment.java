@@ -40,7 +40,7 @@ public class TopTracksActivityFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        ArrayList<TrackParcelable> trackParcelables = null;
+        ArrayList<TopTrackParcelable> topTrackParcelables = null;
 
         View rootView = inflater.inflate(R.layout.fragment_top_tracks, container, false);
 
@@ -50,15 +50,15 @@ public class TopTracksActivityFragment extends Fragment {
         }
 
         if(savedInstanceState == null || !savedInstanceState.containsKey("tracks_key")) {
-            trackParcelables = new ArrayList<TrackParcelable>();
+            topTrackParcelables = new ArrayList<TopTrackParcelable>();
             performSearch(artistId);
         }
         else {
-            trackParcelables = savedInstanceState.getParcelableArrayList("tracks_key");
+            topTrackParcelables = savedInstanceState.getParcelableArrayList("tracks_key");
         }
 
-        ListView listView = (ListView) rootView.findViewById(R.id.listViewOfTopTracks);
-        trackResultListViewAdapter = new IconicAdapter(trackParcelables);
+        ListView listView = (ListView) rootView.findViewById(R.id.listViewTopTracks);
+        trackResultListViewAdapter = new IconicAdapter(topTrackParcelables);
         listView.setAdapter(trackResultListViewAdapter);
 
         return rootView;
@@ -69,15 +69,15 @@ public class TopTracksActivityFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putParcelableArrayList("tracks_key",
-                trackResultListViewAdapter.getTrackParcelables());
+                trackResultListViewAdapter.getTopTrackParcelables());
         super.onSaveInstanceState(outState);
     }
 
-    private ArrayList<String> getTrackNamesFromParcelables(ArrayList<TrackParcelable>
-                                                                   trackParcelables){
+    private ArrayList<String> getTrackNamesFromParcelables(ArrayList<TopTrackParcelable>
+                                                                   topTrackParcelables){
 
         ArrayList<String> trackNames = new ArrayList<>();
-        for(TrackParcelable element : trackParcelables){
+        for(TopTrackParcelable element : topTrackParcelables){
             trackNames.add(element.name);
         }
         return trackNames;
@@ -92,19 +92,19 @@ public class TopTracksActivityFragment extends Fragment {
         spotify.getArtistTopTrack(artistId, options, new Callback<Tracks>() {
             @Override
             public void success(Tracks tracks, Response response) {
-                final ArrayList<TrackParcelable> trackParcelables =
-                        new ArrayList<TrackParcelable>();
+                final ArrayList<TopTrackParcelable> topTrackParcelables =
+                        new ArrayList<TopTrackParcelable>();
                 for (Track track : tracks.tracks) {
-                    trackParcelables.add(new TrackParcelable(track.name,track.album.name,
+                    topTrackParcelables.add(new TopTrackParcelable(track.name,track.album.name,
                             track.album.images.get(0).url,track.preview_url));
                 }
-                trackResultListViewAdapter.swapItems(trackParcelables);
-                Log.d(LOG_TAG,trackParcelables.toString());
+                trackResultListViewAdapter.swapItems(topTrackParcelables);
+                Log.d(LOG_TAG, topTrackParcelables.toString());
 
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if(trackParcelables.size()==0){
+                        if(topTrackParcelables.size()==0){
                             Toast.makeText(getActivity(),
                                     getString(R.string.toast_no_artist_match),
                                     Toast.LENGTH_SHORT).show();
@@ -122,30 +122,30 @@ public class TopTracksActivityFragment extends Fragment {
 
     }
     //This IconicAdapter Pattern is from Busy Android Coder's Guide page 272 of book version 6.7
-    class IconicAdapter extends ArrayAdapter<TrackParcelable> {
+    class IconicAdapter extends ArrayAdapter<TopTrackParcelable> {
 
-        private ArrayList<TrackParcelable> trackParcelables;
+        private ArrayList<TopTrackParcelable> topTrackParcelables;
 
-        public IconicAdapter(ArrayList<TrackParcelable> trackParcelables) {
+        public IconicAdapter(ArrayList<TopTrackParcelable> topTrackParcelables) {
             /*
             Normally this 0 in the super constructor would be the id of the textView we are updating,
             but since we are using a custom Adapter, this is no longer appropriate. So we can just
             put an arbitrary value here.
              */
-            super(getActivity(), 0, trackParcelables);
-            this.trackParcelables = trackParcelables;
+            super(getActivity(), 0, topTrackParcelables);
+            this.topTrackParcelables = topTrackParcelables;
         }
 
-        public void swapItems(ArrayList<TrackParcelable> trackParcelables) {
-            this.trackParcelables.clear();
-            this.trackParcelables.addAll(trackParcelables);
+        public void swapItems(ArrayList<TopTrackParcelable> topTrackParcelables) {
+            this.topTrackParcelables.clear();
+            this.topTrackParcelables.addAll(topTrackParcelables);
 
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
 
-            TrackParcelable track = getItem(position);
+            TopTrackParcelable track = getItem(position);
 
             //View Holder Pattern
             if (convertView == null) {
@@ -168,8 +168,8 @@ public class TopTracksActivityFragment extends Fragment {
 
         }
 
-        public ArrayList<TrackParcelable> getTrackParcelables(){
-            return trackParcelables;
+        public ArrayList<TopTrackParcelable> getTopTrackParcelables(){
+            return topTrackParcelables;
         }
 
     }

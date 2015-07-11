@@ -53,7 +53,7 @@ public class SearchActivityFragment extends Fragment {
         ArrayList<SearchResultParcelable> searchResultParcelables = null;
 
 
-        EditText editText = (EditText) rootView.findViewById(R.id.search_edit_text);
+        EditText editText = (EditText) rootView.findViewById(R.id.EditTextSearchArtist);
         editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -64,6 +64,8 @@ public class SearchActivityFragment extends Fragment {
                 return false;
             }
         });
+
+        // We retrive the spotify data
         if(savedInstanceState == null || !savedInstanceState.containsKey("search_key")) {
             searchResultParcelables = new ArrayList<SearchResultParcelable>();
         }
@@ -71,7 +73,7 @@ public class SearchActivityFragment extends Fragment {
             searchResultParcelables = savedInstanceState.getParcelableArrayList("search_key");
         }
 
-        ListView listView = (ListView) rootView.findViewById(R.id.artist_search_results_list);
+        ListView listView = (ListView) rootView.findViewById(R.id.ListViewArtists);
         artistResultListViewAdapter = new IconicAdapter(searchResultParcelables);
         listView.setAdapter(artistResultListViewAdapter);
 
@@ -93,6 +95,8 @@ public class SearchActivityFragment extends Fragment {
 
     }
     @Override
+
+    //we save spotify data
     public void onSaveInstanceState(Bundle outState) {
         outState.putParcelableArrayList("search_key",
                 artistResultListViewAdapter.getSearchResultParcelables());
