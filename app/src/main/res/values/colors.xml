@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="white">#FFFFFF</color>
+    <color name="grey">#cccccc</color>
+    <color name="grey_700">#646464</color>
+    <color name="black">#000000</color>
+
+    <color name="app_header">#ff424242</color>
+    <color name="android_header">#ff118b67</color>
+
+    <drawable name="color_item_pressed">#ffe3e3e3</drawable>
+    <drawable name="color_item_selected">#ff118b67</drawable>
+    <drawable name="color_item_not_selected">#FFFFFF</drawable>
+
+</resources>

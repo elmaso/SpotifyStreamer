@@ -1,5 +1,6 @@
 package com.example.mariosoberanis.spotifystreamer;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -36,4 +37,20 @@ public class SearchActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == SETTINGS_ACTIVITY_REQUEST_CODE) {
+
+            /*
+            * If we've just returned from the Settings Activity, then refresh
+            * the list of tracks.  The allow explicit content setting or country
+            * code may have changed, so we want to update the track list to
+            * reflect that.
+            */
+            if (mIsTwoPanel) {
+                onArtistSelected(mLastTrackListUri);
+            }
+        }
 }

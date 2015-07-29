@@ -26,7 +26,7 @@
             android:layout_marginLeft="20dp"
             android:layout_marginStart="20dp"
             android:gravity="center_vertical"
-            tools:text="tu y las nuves" />
+            tools:text="@string/TextViewTrackTitle" />
 
         <TextView
             android:id="@+id/textViewTrackAlbum"
@@ -35,7 +35,7 @@
             android:layout_marginLeft="20dp"
             android:layout_marginStart="20dp"
             android:gravity="center_vertical"
-            tools:text="Muse is in the house" />
+            tools:text="@string/TextViewTrackAlbum" />
 
     </LinearLayout>
 

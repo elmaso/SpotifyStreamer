@@ -15,4 +15,6 @@
     <!-- Toasts -->
     <string name="toast_no_artist_match">Sorry mate, we don\'t know any artist like that, try something else</string>
     <string name="toast_no_top_tracks">Sorry we don\'t have any top tracks</string>
+    <string name="TextViewTrackTitle">tu y las nuves</string>
+    <string name="TextViewTrackAlbum">Muse is in the house</string>
 </resources>
