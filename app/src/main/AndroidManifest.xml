@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.mariosoberanis.spotifystreamer">
+    package="udacity.mariosoberanis.spotifystreamer" >
 
+    <!-- Required Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <permission android:name="android.permission.MEDIA_CONTENT_CONTROL" />
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme" >
         <activity
-            android:name=".SearchActivity"
+            android:name="udacity.mariosoberanis.spotifystreamer.activities.SearchActivity"
             android:label="@string/app_name"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,12 +24,31 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".TopTracksActivity"
+            android:name="udacity.mariosoberanis.spotifystreamer.activities.TopTracksActivity"
             android:label="@string/title_activity_top_tracks"
-            android:parentActivityName=".SearchActivity">
+            android:parentActivityName="udacity.mariosoberanis.spotifystreamer.activities.SearchActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".SearchActivity" />
+                android:value="udacity.mariosoberanis.spotifystreamer.activities.SearchActivity" />
+        </activity>
+        <activity
+            android:name="udacity.mariosoberanis.spotifystreamer.activities.TrackPlayingActivity"
+            android:parentActivityName="udacity.mariosoberanis.spotifystreamer.activities.TopTracksActivity"
+            android:label="@string/now_playing"
+            android:launchMode="singleTop"
+            android:theme="@android:style/Theme.Dialog" />
+
+        <provider
+            android:name="udacity.mariosoberanis.spotifystreamer.db.SpotiProvider"
+            android:authorities="com.example.mariosoberanis.spotifystreamer" />
+
+        <service
+            android:name="udacity.mariosoberanis.spotifystreamer.services.SpotiMediaService"
+            android:exported="false" />
+
+        <activity
+            android:name="udacity.mariosoberanis.spotifystreamer.activities.SettingsActivity"
+            android:label="@string/title_activity_settings" >
         </activity>
     </application>
 
