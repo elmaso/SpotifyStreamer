@@ -1,20 +1,55 @@
 <resources>
-    <string name="app_name">Spotify Streamer Baby!!</string>
-    <string name="hello_world">Hi Maso</string>
-    <!-- Activity titles -->
-    <string name="title_activity_top_tracks">Here comes the music</string>
-    <string name="example_search_for_artist">Muse</string>
+    <string name="app_name">Spoti Streamer Yhea Baby!!</string>
+    <string name="now_playing">Music is on Baby</string>
 
-    <!-- Menu items -->
+    <string name="artist_label">Artist: </string>
+    <string name="track_label">Track: </string>
+    <string name="album_label">Album: </string>
+
+    <string name="previous">Previous</string>
+    <string name="play">Play</string>
+    <string name="pause">Pause</string>
+    <string name="next">Next</string>
+    <string name="stop">Stop</string>
+
     <string name="action_settings">Settings</string>
+    <string name="action_share">Share with the world....</string>
 
-    <!-- Image descriptions -->
-    <string name="artist_search_list_item_image_description">Artist image</string>
-    <string name="track_list_item_image_description">Album art</string>
+    <string name="enter_artist_name">Enter Artist\'s Name</string>
+    <string name="title_activity_artist_search">ArtistSearch</string>
 
-    <!-- Toasts -->
-    <string name="toast_no_artist_match">Sorry mate, we don\'t know any artist like that, try something else</string>
-    <string name="toast_no_top_tracks">Sorry we don\'t have any top tracks</string>
-    <string name="TextViewTrackTitle">tu y las nuves</string>
-    <string name="TextViewTrackAlbum">Muse is in the house</string>
+    <string name="artist_list_empty">Sorry mate, we don\'t know any artist like that, try something else</string>
+    <string name="track_list_empty">Sorry we didn\'t find any top tracks (yet) </string>
+
+
+    <string name="artist_list_error">No data no data, please connect to the cloud artists</string>
+
+
+    <string name="search">Search</string>
+    <string name="no_search_string">So what artist do you like?....</string>
+    <string name="title_activity_top_tracks">Top Tracks</string>
+
+    <string name="error_fetching_artists">Error retrieving list of Artists</string>
+    <string name="error_fetching_tracks">Error retrieving list of Tracks</string>
+    <string name="error_restoring_state">Error restoring state.  App has been re-started.</string>
+
+    <string name="spotify_streamer_running">Spoti is Running Baby</string>
+    <string name="spotify_streamer_unavailable">Spoti service is unavailable.  Please try again.</string>
+
+    <string name="media_error_playing">Error playing Track (Network Unavailable?)</string>
+    <string name="media_error_general">Error in Media Player.</string>
+
+    <string name="title_activity_settings">Spoti - Settings</string>
+    <string name="prefs_allow_explict_title">Allow Explicit Content?</string>
+    <string name="prefs_show_on_lock_title">Show Notifications on the Lock Screen?</string>
+    <string name="prefs_country_code_title">Country Code:</string>
+    <string name="prefs_default_country_code">MX</string>
+    <string name="invalid_country_code">%1$s is not a recognized country code</string>
+
+    <string name="true_string">True</string>
+    <string name="false_string">False</string>
+
+
+    <string name="share_no_tracks_played">No tracks have been played.</string>
+    <string name="track_list_error">No Track found</string>
 </resources>

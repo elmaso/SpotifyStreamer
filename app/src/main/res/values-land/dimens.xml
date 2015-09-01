@@ -1,0 +1,26 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <dimen name="icon_height">80dp</dimen>
+    <dimen name="icon_width">80dp</dimen>
+
+    <!--
+    The image displayed when a track is playing needs to be smaller when
+    viewed on a smaller screen in landscape mode.  Otherwise, the control buttons
+    will be pushed off the bottom of the screen.
+    -->
+    <dimen name="track_image_display_height">128dp</dimen>
+    <dimen name="track_image_display_width">128dp</dimen>
+
+    <!--
+    These are the dimensions of the image that we'll download.  If the device is rotated
+    into landscape mode, then we'll shrink it down to the track_image_display_... setting.
+    It's better to download the larger image and then shrink it down to the smaller if we
+    rotate to landscape.  Scaling the smaller image up gives poor image quality.
+    -->
+    <dimen name="track_image_download_height">256dp</dimen>
+    <dimen name="track_image_download_width">256dp</dimen>
+
+</resources>

@@ -1,0 +1,21 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <dimen name="icon_height">100dp</dimen>
+    <dimen name="icon_width">100dp</dimen>
+
+    <dimen name="track_image_display_height">612dp</dimen>
+    <dimen name="track_image_display_width">612dp</dimen>
+
+    <!--
+    These are the dimensions of the image that we'll download.  If the device is rotated
+    into landscape mode, then we'll shrink it down to the track_image_display_... setting.
+    It's better to download the larger image and then shrink it down to the smaller if we
+    rotate to landscape.  Scaling the smaller image up gives poor image quality.
+    -->
+    <dimen name="track_image_download_height">512dp</dimen>
+    <dimen name="track_image_download_width">512dp</dimen>
+
+</resources>
